@@ -1,13 +1,5 @@
-// Jim Whitehead
-// Created: 4/14/2024
-// Phaser: 3.70.0
-//
-// Cubey
-//
-// An example of putting sprites on the screen using Phaser
-// 
-// Art assets from Kenny Assets "Shape Characters" set:
-// https://kenney.nl/assets/shape-characters
+//CMPM120 - Final Game
+//Victoria Morgan and Lo Weislak
 
 // debug with extreme prejudice
 "use strict"
@@ -19,8 +11,10 @@ let config = {
     render: {
         pixelArt: true  // prevent pixel art from getting blurred when scaled
     },
-    width: 1440,
-    height: 900,
+    width: 640,
+    height: 1440,
+    //width: 1440,
+    //height: 900,
     scene: [Load, LevelOne]
 }
 
