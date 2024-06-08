@@ -37,7 +37,7 @@ class LevelOne extends Phaser.Scene {
 
     //Add player sprite
     setPlayer() {
-        my.sprite.player = this.physics.add.sprite(this.map.widthInPixels/2, this.map.heightInPixels - 20, "tempPlayer"); //Temp testing
+        my.sprite.player = this.physics.add.sprite(this.map.widthInPixels/2, this.map.heightInPixels - 40, "tempPlayer"); //Temp testing
 
         //my.sprite.player = this.physics.add.sprite(30, 30, "platformer_characters", "tile_0000.png");
         my.sprite.player.setCollideWorldBounds(true);
@@ -64,13 +64,13 @@ class LevelOne extends Phaser.Scene {
     //Handles player movement and restarting the game
     checkKeyPress() {
         if (Phaser.Input.Keyboard.JustDown(cursors.left)) { //Check for only 1 key press
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x - 50, my.sprite.player.y, 2000);
+            this.physics.moveTo(my.sprite.player, my.sprite.player.x - 40, my.sprite.player.y, 2000);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x + 50, my.sprite.player.y, 2000);
+            this.physics.moveTo(my.sprite.player, my.sprite.player.x + 40, my.sprite.player.y, 2000);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y - 50, 2000);
+            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y - 40, 2000);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y + 50, 2000);
+            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y + 40, 2000);
         } else {
             my.sprite.player.setVelocity(0);
         }
