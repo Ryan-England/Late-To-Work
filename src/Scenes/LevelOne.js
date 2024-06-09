@@ -6,7 +6,10 @@ class LevelOne extends Phaser.Scene {
     preload() {
         this.load.setPath("./assets/");
 
+        //Load images
         this.load.image("tempPlayer", "tile_0295.png"); //Temp asset for testing
+        this.load.image("tempBus", "tempBus.png"); //Temp asset for testing
+
         this.SCALE = 3.0;
     }
 
@@ -14,6 +17,17 @@ class LevelOne extends Phaser.Scene {
         this.setMap();
         this.setPlayer();
         this.setKeys();
+
+        //Groups
+        my.sprite.busGroup = this.add.group({ //TEST
+            defaultKey: "tempBus",
+            maxSize: 10
+        })
+        my.sprite.busGroup.createMultiple({ //TEST
+            active: false,
+            key: my.sprite.busGroup.defaultKey,
+            repeat: my.sprite.busGroup.maxSize-1
+        });
         
         this.setCamera();
     }
@@ -43,7 +57,7 @@ class LevelOne extends Phaser.Scene {
         my.sprite.player.setCollideWorldBounds(true);
     }
 
-    //Add keys for controls
+    //Set arrow keys for controls
     setKeys() {
         cursors = this.input.keyboard.createCursorKeys();
     }
@@ -58,6 +72,8 @@ class LevelOne extends Phaser.Scene {
     
     update() {
         this.checkKeyPress();
+        this.placeCars(Math.floor(Math.random() * this.map.heightInPixels), Math.floor(Math.random() * 2));
+        this.moveCars();
     }
 
     //Check for specific key presses
@@ -75,4 +91,46 @@ class LevelOne extends Phaser.Scene {
             my.sprite.player.setVelocity(0);
         }
     }
+
+    //Determines where cars will spawn
+    //TODO: Only spawn on roads
+    //TODO: Randomize spawn times
+    placeCars(height, width) { //Height determines what road, width determines what side (left = 0 or right = 1)
+        let car = my.sprite.busGroup.getFirstDead();
+        if(car != null) {
+            car.y = height;
+            if(width == 1) { //Right side of screen
+                car.flipX = true; //Flip sprite so it is facing left
+                car.x = this.map.widthInPixels;
+            } else { //Left side of screen
+                car.x = 0;
+            }
+            car.active = true;
+            car.visible = true;
+            console.log("height:",car.y,"width:",car.x); //TEST
+        }
+    }
+
+    //Move cars in direction they are facing
+    moveCars() {
+        for(let bus of my.sprite.busGroup.getChildren()) {
+            if (bus.active) {
+                if(bus.flipX === true) { //If car is driving to the left
+                    bus.x -= 1;
+                } else { //If car is driving to the right
+                    bus.x += 1;
+                }
+            }
+            this.removeCars(bus);
+        }
+    }
+
+    //Helper function to remove cars once they reach either end of the screen
+    removeCars(bus) {
+        if (bus.x < -10 || bus.x > this.map.widthInPixels + 10) {
+            bus.active = false;
+            bus.visible = false;
+        }
+    }
+
 }
