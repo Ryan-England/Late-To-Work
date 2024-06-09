@@ -1,6 +1,11 @@
 class LevelOne extends Phaser.Scene {
     constructor() {
         super("level1");
+
+        this.tileHeight = 16;
+        this.tileWidth = 16;
+
+        this.playerSpeed = 400;
     }
 
     preload() {
@@ -22,8 +27,8 @@ class LevelOne extends Phaser.Scene {
     setMap() {
         // Create a new tilemap game object which uses 16x16 pixel tiles, and is
         // 40 tiles wide and 90 tiles tall
-        this.map = this.add.tilemap("tempHighway", 16, 16, 40, 90);
-        this.physics.world.setBounds(0, 0, 40*16, 90*16);
+        this.map = this.add.tilemap("tempHighway", this.tileWidth, this.tileHeight, 40, 90);
+        this.physics.world.setBounds(0, 0, 40*this.tileWidth, 90*this.tileHeight);
 
         // Add a tileset to the map
         // First parameter: name we gave the tileset in Tiled
@@ -37,7 +42,7 @@ class LevelOne extends Phaser.Scene {
 
     //Add player sprite
     setPlayer() {
-        my.sprite.player = this.physics.add.sprite(this.map.widthInPixels/2, this.map.heightInPixels - 40, "tempPlayer"); //Temp testing
+        my.sprite.player = this.physics.add.sprite(this.map.widthInPixels/2, this.map.heightInPixels - 36, "tempPlayer"); //Temp testing
 
         //my.sprite.player = this.physics.add.sprite(30, 30, "platformer_characters", "tile_0000.png");
         my.sprite.player.setCollideWorldBounds(true);
@@ -64,13 +69,13 @@ class LevelOne extends Phaser.Scene {
     //Handles player movement and restarting the game
     checkKeyPress() {
         if (Phaser.Input.Keyboard.JustDown(cursors.left)) { //Check for only 1 key press
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x - 40, my.sprite.player.y, 2000);
+            this.physics.moveTo(my.sprite.player, my.sprite.player.x - this.playerSpeed, my.sprite.player.y, 2000);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x + 40, my.sprite.player.y, 2000);
+            this.physics.moveTo(my.sprite.player, my.sprite.player.x + this.playerSpeed, my.sprite.player.y, 2000);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y - 40, 2000);
+            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y - this.playerSpeed, 2000);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y + 40, 2000);
+            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y + this.playerSpeed, 2000);
         } else {
             my.sprite.player.setVelocity(0);
         }
