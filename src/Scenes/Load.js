@@ -10,8 +10,8 @@ class Load extends Phaser.Scene {
         //this.load.atlas("platformer_characters", "tilemap-characters-packed.png", "tilemap-characters-packed.json");
 
         // Load tilemap information
-        this.load.image("temp_tilemap_tiles", "tilemap_packed.png"); //Packed tilemap
-        this.load.tilemapTiledJSON("tempHighway", "tempHighway.tmj"); //Tilemap in JSON
+        this.load.image("tilemap_tiles", "tilemap_packed.png"); //Packed tilemap
+        this.load.tilemapTiledJSON("highway", "highway.tmj"); //Tilemap in JSON
 
         this.load.multiatlas("kenny-particles", "kenny-particles.json");
     }
