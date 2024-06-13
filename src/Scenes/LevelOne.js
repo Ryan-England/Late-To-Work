@@ -7,6 +7,9 @@ class LevelOne extends Phaser.Scene {
         this.tileWidth = 16;
 
         this.playerSpeed = 400;
+
+        this.smokeLength = 12;
+        this.vfxCounter = this.smokeLength;
     }
 
     preload() {
@@ -24,6 +27,18 @@ class LevelOne extends Phaser.Scene {
         this.setObstacles();
         
         this.setCamera();
+
+        // Walking vfx
+        my.vfx.walking = this.add.particles(0, 0, "kenny-particles", {
+            frame: ['smoke_03.png', 'smoke_04.png', 'smoke_06.png', 'smoke_08.png'],
+            random: true,
+            scale: {start: 0.003, end: 0.04},
+            lifespan: 500,
+            alpha: {start: 1, end: 0.01}, 
+            frequency: 20
+        });
+
+        my.vfx.walking.stop();
     }
 
     //Set up highway map
@@ -44,7 +59,7 @@ class LevelOne extends Phaser.Scene {
 
     //Add player sprite
     setPlayer() {
-        my.sprite.player = this.physics.add.sprite(this.map.widthInPixels/2, this.map.heightInPixels - 36, "tempPlayer"); //Temp testing
+        my.sprite.player = this.physics.add.sprite(this.map.widthInPixels/2, this.map.heightInPixels - 36, "downPlayer00");
 
         //my.sprite.player = this.physics.add.sprite(30, 30, "platformer_characters", "tile_0000.png");
         my.sprite.player.setCollideWorldBounds(true);
@@ -79,6 +94,10 @@ class LevelOne extends Phaser.Scene {
     
     update() {
         this.checkKeyPress();
+
+        if (this.vfxCounter < 0) {
+            my.vfx.walking.stop();
+        }
     }
 
     //Check for specific key presses
@@ -87,14 +106,32 @@ class LevelOne extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(cursors.left)) { //Check for only 1 key press
             //Note: don't set velocity too high or player will pass through obstacles
             my.sprite.player.body.setVelocityX(-900);
+            // my.sprite.player.setTexture("leftPlayer");
+            my.sprite.player.anims.play("leftWalk");
+            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
+            my.vfx.walking.start();
+            this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
             my.sprite.player.body.setVelocityX(900);
+            my.sprite.player.setTexture("rightPlayer");
+            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
+            my.vfx.walking.start();
+            this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
             my.sprite.player.body.setVelocityY(-900);
+            my.sprite.player.setTexture("upPlayer");
+            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
+            my.vfx.walking.start();
+            this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
             my.sprite.player.body.setVelocityY(900);
+            my.sprite.player.setTexture("downPlayer");
+            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
+            my.vfx.walking.start();
+            this.vfxCounter = this.smokeLength;
         } else {
             my.sprite.player.setVelocity(0);
+            this.vfxCounter--;
         }
     }
 }
