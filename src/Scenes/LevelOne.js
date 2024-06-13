@@ -2,6 +2,7 @@ class LevelOne extends Phaser.Scene {
     constructor() {
         super("level1");
 
+        // Set up global variables to use later
         this.tileHeight = 16;
         this.tileWidth = 16;
 
@@ -16,10 +17,10 @@ class LevelOne extends Phaser.Scene {
     }
 
     create() {
+        // Initialization
         this.setMap();
         this.setPlayer();
         this.setKeys();
-        
         this.setCamera();
     }
 
