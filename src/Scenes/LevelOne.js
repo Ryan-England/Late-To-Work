@@ -8,7 +8,10 @@ class LevelOne extends Phaser.Scene {
 
         //Load images
         this.load.image("tempPlayer", "tile_0295.png"); //Temp asset for testing
-        this.load.image("tempBus", "tempBus.png"); //Temp asset for testing
+        this.load.image("bus", "bus.png");
+        this.load.image("car", "rounded_yellow.png");
+        this.load.image("scooter", "scooter.png");
+        this.load.audio("carCollision", "explosion.wav");
 
         this.SCALE = 3.0;
     }
@@ -17,17 +20,7 @@ class LevelOne extends Phaser.Scene {
         this.setMap();
         this.setPlayer();
         this.setKeys();
-
-        //Groups
-        my.sprite.busGroup = this.add.group({ //TEST
-            defaultKey: "tempBus",
-            maxSize: 10
-        })
-        my.sprite.busGroup.createMultiple({ //TEST
-            active: false,
-            key: my.sprite.busGroup.defaultKey,
-            repeat: my.sprite.busGroup.maxSize-1
-        });
+        this.setGroups();
         
         this.setCamera();
     }
@@ -62,6 +55,42 @@ class LevelOne extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
     }
 
+    //Add group for each of the three types of vehicles
+    setGroups() {
+        //Bus
+        my.sprite.busGroup = this.add.group({
+            defaultKey: "bus",
+            maxSize: 10
+        })
+        my.sprite.busGroup.createMultiple({
+            active: false,
+            key: my.sprite.busGroup.defaultKey,
+            repeat: my.sprite.busGroup.maxSize-1
+        });
+
+        //Car
+        my.sprite.carGroup = this.add.group({
+            defaultKey: "car",
+            maxSize: 10
+        })
+        my.sprite.carGroup.createMultiple({
+            active: false,
+            key: my.sprite.carGroup.defaultKey,
+            repeat: my.sprite.carGroup.maxSize-1
+        });
+
+        //Scooter
+        my.sprite.scooterGroup = this.add.group({
+            defaultKey: "scooter",
+            maxSize: 10
+        })
+        my.sprite.scooterGroup.createMultiple({
+            active: false,
+            key: my.sprite.scooterGroup.defaultKey,
+            repeat: my.sprite.scooterGroup.maxSize-1
+        });
+    }
+
     //Add camera and lock onto player
     setCamera() {
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -72,21 +101,32 @@ class LevelOne extends Phaser.Scene {
     
     update() {
         this.checkKeyPress();
-        this.placeCars(Math.floor(Math.random() * this.map.heightInPixels), Math.floor(Math.random() * 2));
-        this.moveCars();
+    
+        this.placeCars(my.sprite.busGroup.getFirstDead());
+        this.placeCars(my.sprite.carGroup.getFirstDead());
+        this.placeCars(my.sprite.scooterGroup.getFirstDead());
+
+        this.moveCars(my.sprite.busGroup.getChildren());
+        this.moveCars(my.sprite.carGroup.getChildren());
+        this.moveCars(my.sprite.scooterGroup.getChildren());
+
+        this.checkCollision(my.sprite.busGroup.getChildren());
+        this.checkCollision(my.sprite.carGroup.getChildren());
+        this.checkCollision(my.sprite.scooterGroup.getChildren());
     }
 
     //Check for specific key presses
     //Handles player movement and restarting the game
     checkKeyPress() {
         if (Phaser.Input.Keyboard.JustDown(cursors.left)) { //Check for only 1 key press
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x - 40, my.sprite.player.y, 2000);
+            //Note: don't set velocity too high or player will pass through obstacles
+            my.sprite.player.body.setVelocityX(-900);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x + 40, my.sprite.player.y, 2000);
+            my.sprite.player.body.setVelocityX(900);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y - 40, 2000);
+            my.sprite.player.body.setVelocityY(-900);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y + 40, 2000);
+            my.sprite.player.body.setVelocityY(900);
         } else {
             my.sprite.player.setVelocity(0);
         }
@@ -94,9 +134,11 @@ class LevelOne extends Phaser.Scene {
 
     //Determines where cars will spawn
     //TODO: Only spawn on roads
-    //TODO: Randomize spawn times
-    placeCars(height, width) { //Height determines what road, width determines what side (left = 0 or right = 1)
-        let car = my.sprite.busGroup.getFirstDead();
+    placeCars(car) {
+        setTimeout(() => { //Waits to spawn more cars every 500 ms
+        let height = Math.floor(Math.random() * this.map.heightInPixels); //Height determines what road
+        let width = Math.floor(Math.random() * 2); //Width determines what side (left = 0 or right = 1)
+
         if(car != null) {
             car.y = height;
             if(width == 1) { //Right side of screen
@@ -107,30 +149,54 @@ class LevelOne extends Phaser.Scene {
             }
             car.active = true;
             car.visible = true;
-            console.log("height:",car.y,"width:",car.x); //TEST
+            //console.log("height:",car.y,"width:",car.x); //TEST
         }
+        }, 500);
     }
 
     //Move cars in direction they are facing
-    moveCars() {
-        for(let bus of my.sprite.busGroup.getChildren()) {
-            if (bus.active) {
-                if(bus.flipX === true) { //If car is driving to the left
-                    bus.x -= 1;
+    moveCars(cars) {
+        for(let car of cars) {
+            if (car.active) {
+                if(car.flipX === true) { //If car is driving to the left
+                    car.x -= 1;
                 } else { //If car is driving to the right
-                    bus.x += 1;
+                    car.x += 1;
                 }
             }
-            this.removeCars(bus);
+            this.removeCars(car);
         }
     }
 
     //Helper function to remove cars once they reach either end of the screen
-    removeCars(bus) {
-        if (bus.x < -10 || bus.x > this.map.widthInPixels + 10) {
-            bus.active = false;
-            bus.visible = false;
+    removeCars(car) {
+        if (car.x < -10 || car.x > this.map.widthInPixels + 10) {
+            car.active = false;
+            car.visible = false;
         }
+    }
+
+    //Check collision of player and car
+    //TODO: Switch to end screen when player gets hit
+    checkCollision(cars) {
+        for (let car of cars) {
+            if (this.collides(my.sprite.player, car)) {
+                //TODO: Go to end screen
+                my.sprite.player.visible = false;
+
+                //car.x = -100; //Put car offscreen to be removed
+                //this.removeCars(car);
+
+                this.sound.play("carCollision", {volume: 0.5});
+            }
+        }
+    }
+
+    // Helper function. A center-radius AABB collision check
+    collides(a, b) {
+        if (Math.abs(a.x - b.x) > (a.displayWidth/2 + b.displayWidth/2)) return false;
+        if (Math.abs(a.y - b.y) > (a.displayHeight/2 + b.displayHeight/2)) return false;
+        return true;
     }
 
 }
