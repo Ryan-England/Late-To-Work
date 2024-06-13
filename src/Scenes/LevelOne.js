@@ -14,6 +14,7 @@ class LevelOne extends Phaser.Scene {
         this.setMap();
         this.setPlayer();
         this.setKeys();
+        this.setObstacles();
         
         this.setCamera();
     }
@@ -32,12 +33,6 @@ class LevelOne extends Phaser.Scene {
 
         // Create layers
         this.roadLayer = this.map.createLayer("road", this.tileset, 0, 0);
-        this.obstacleLayer = this.map.createLayer("obstacles", this.tileset, 0 ,0);
-
-        // Make obstances collidable
-        this.obstacleLayer.setCollisionByProperty({
-            collides: true
-        });
     }
 
     //Add player sprite
@@ -51,6 +46,20 @@ class LevelOne extends Phaser.Scene {
     //Add keys for controls
     setKeys() {
         cursors = this.input.keyboard.createCursorKeys();
+    }
+
+    //Add obstacles to game
+    //Done after adding player so that player sprite can pass under
+    setObstacles() {
+        this.obstacleLayer = this.map.createLayer("obstacles", this.tileset, 0 ,0);
+
+        // Make obstances collidable
+        this.obstacleLayer.setCollisionByProperty({
+            collides: true
+        });
+        
+        // Enable collision handling
+        this.physics.add.collider(my.sprite.player, this.obstacleLayer);
     }
 
     //Add camera and lock onto player
@@ -69,13 +78,14 @@ class LevelOne extends Phaser.Scene {
     //Handles player movement and restarting the game
     checkKeyPress() {
         if (Phaser.Input.Keyboard.JustDown(cursors.left)) { //Check for only 1 key press
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x - 40, my.sprite.player.y, 2000);
+            //Note: don't set velocity too high or player will pass through obstacles
+            my.sprite.player.body.setVelocityX(-900);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x + 40, my.sprite.player.y, 2000);
+            my.sprite.player.body.setVelocityX(900);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y - 40, 2000);
+            my.sprite.player.body.setVelocityY(-900);
         } else if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
-            this.physics.moveTo(my.sprite.player, my.sprite.player.x, my.sprite.player.y + 40, 2000);
+            my.sprite.player.body.setVelocityY(900);
         } else {
             my.sprite.player.setVelocity(0);
         }
