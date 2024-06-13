@@ -30,7 +30,7 @@ class LevelOne extends Phaser.Scene {
     setMap() { 
         // Create a new tilemap game object which uses 16x16 pixel tiles, and is
         // 40 tiles wide and 90 tiles tall
-        this.map = this.add.tilemap("highway", 16, 16, 40, 90);
+        this.map = this.add.tilemap("highway", this.tileWidth, this.tileHeight, 40, 90);
         this.physics.world.setBounds(0, 0, 40*16, 90*16);
 
         // Add a tileset to the map
