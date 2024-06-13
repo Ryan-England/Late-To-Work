@@ -60,7 +60,7 @@ class LevelOne extends Phaser.Scene {
         //Bus
         my.sprite.busGroup = this.add.group({
             defaultKey: "bus",
-            maxSize: 10
+            maxSize: 20
         })
         my.sprite.busGroup.createMultiple({
             active: false,
@@ -71,7 +71,7 @@ class LevelOne extends Phaser.Scene {
         //Car
         my.sprite.carGroup = this.add.group({
             defaultKey: "car",
-            maxSize: 10
+            maxSize: 20
         })
         my.sprite.carGroup.createMultiple({
             active: false,
@@ -82,7 +82,7 @@ class LevelOne extends Phaser.Scene {
         //Scooter
         my.sprite.scooterGroup = this.add.group({
             defaultKey: "scooter",
-            maxSize: 10
+            maxSize: 20
         })
         my.sprite.scooterGroup.createMultiple({
             active: false,
@@ -103,8 +103,8 @@ class LevelOne extends Phaser.Scene {
         this.checkKeyPress();
     
         this.placeCars(my.sprite.busGroup.getFirstDead());
-        this.placeCars(my.sprite.carGroup.getFirstDead());
-        this.placeCars(my.sprite.scooterGroup.getFirstDead());
+        setTimeout(_ => this.placeCars(my.sprite.carGroup.getFirstDead()), 500);
+        setTimeout(_ => this.placeCars(my.sprite.scooterGroup.getFirstDead()), 200);
 
         this.moveCars(my.sprite.busGroup.getChildren());
         this.moveCars(my.sprite.carGroup.getChildren());
@@ -135,7 +135,6 @@ class LevelOne extends Phaser.Scene {
     //Determines where cars will spawn
     //TODO: Only spawn on roads
     placeCars(car) {
-        setTimeout(() => { //Waits to spawn more cars every 500 ms
         let height = Math.floor(Math.random() * this.map.heightInPixels); //Height determines what road
         let width = Math.floor(Math.random() * 2); //Width determines what side (left = 0 or right = 1)
 
@@ -151,7 +150,6 @@ class LevelOne extends Phaser.Scene {
             car.visible = true;
             //console.log("height:",car.y,"width:",car.x); //TEST
         }
-        }, 500);
     }
 
     //Move cars in direction they are facing
