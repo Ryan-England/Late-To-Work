@@ -113,19 +113,19 @@ class LevelOne extends Phaser.Scene {
             this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
             my.sprite.player.body.setVelocityX(900);
-            my.sprite.player.setTexture("rightPlayer");
+            my.sprite.player.anims.play("rightWalk");
             my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
             my.vfx.walking.start();
             this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
             my.sprite.player.body.setVelocityY(-900);
-            my.sprite.player.setTexture("upPlayer");
+            my.sprite.player.anims.play("upWalk");
             my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
             my.vfx.walking.start();
             this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
             my.sprite.player.body.setVelocityY(900);
-            my.sprite.player.setTexture("downPlayer");
+            my.sprite.player.anims.play("downWalk");
             my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
             my.vfx.walking.start();
             this.vfxCounter = this.smokeLength;
