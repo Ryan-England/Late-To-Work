@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="6">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="90" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="10">
+ <editorsettings>
+  <export target="highway.tmj" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" name="highway_tilemap_packed" tilewidth="16" tileheight="16" tilecount="486" columns="27">
   <image source="../kenney_rpg-urban-pack/Tilemap/tilemap_packed.png" width="432" height="288"/>
   <tile id="162">
@@ -457,6 +460,9 @@
 29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29
 </data>
  </layer>
+ <objectgroup id="5" name="Objects">
+  <object id="9" name="goal" gid="308" x="312" y="23" width="16" height="16"/>
+ </objectgroup>
  <layer id="4" name="obstacles" width="40" height="90">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,233,0,0,0,0,0,0,0,0,233,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

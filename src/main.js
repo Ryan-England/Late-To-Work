@@ -25,7 +25,7 @@ let config = {
     height: window.innerHeight,
     //width: 640,
     //height: 1440,
-    scene: [Load, LevelOne]
+    scene: [Load, LevelOne, GameOver, GameWin]
 }
 
 var cursors;

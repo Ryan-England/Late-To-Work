@@ -22,6 +22,12 @@ class LevelOne extends Phaser.Scene {
         this.load.image("scooter", "scooter.png");
         this.load.audio("carCollision", "explosion.wav");
 
+        // Load the tilemap as a spritesheet
+        this.load.spritesheet("tile_sheet", "tilemap_packed.png", {
+            frameWidth: 16,
+            frameHeight: 16
+        });
+
         this.SCALE = 3.0;
     }
 
@@ -45,8 +51,18 @@ class LevelOne extends Phaser.Scene {
             alpha: {start: 1, end: 0.01}, 
             frequency: 20
         });
-
         my.vfx.walking.stop();
+
+        //Goal
+        this.goal = this.map.createFromObjects("Objects", {
+            name: "goal",
+            key: "tile_sheet",
+            frame: 307
+        });
+        this.physics.world.enable(this.goal, Phaser.Physics.Arcade.STATIC_BODY);
+        this.goalGroup = this.add.group(this.goal);
+
+        this.checkWin();
     }
 
     //Set up highway map
@@ -157,6 +173,12 @@ class LevelOne extends Phaser.Scene {
         return grid;
     }
     
+    checkWin() {
+        this.physics.add.overlap(my.sprite.player, this.goalGroup, (obj1, obj2) => {
+            this.scene.start("gameWin");
+        });
+    }
+    
     update() {
         this.checkKeyPress();
     
@@ -265,12 +287,10 @@ class LevelOne extends Phaser.Scene {
     }
 
     //Check collision of player and car
-    //TODO: Switch to end screen when player gets hit
     checkCollision(cars) {
         for (let car of cars) {
             if (this.collides(my.sprite.player, car)) {
-                //TODO: Go to end screen
-                my.sprite.player.visible = false;
+                this.scene.start("gameOver"); //Gives weird error regarding cars.getFirstDead(), but still works
 
                 //car.x = -100; //Put car offscreen to be removed
                 //this.removeCars(car);

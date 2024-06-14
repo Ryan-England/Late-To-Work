@@ -104,6 +104,29 @@
          "y":0
         }, 
         {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Objects",
+         "objects":[
+                {
+                 "gid":308,
+                 "height":16,
+                 "id":9,
+                 "name":"goal",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":312,
+                 "y":23
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 233, 0, 0, 0, 0, 0, 0, 0, 0, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 287, 0, 0, 0, 0, 0, 0, 0, 0, 287, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -204,8 +227,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":6,
+ "nextlayerid":6,
+ "nextobjectid":10,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
