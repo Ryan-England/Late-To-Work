@@ -24,6 +24,8 @@ class LevelOne extends Phaser.Scene {
         this.setGroups();
         
         this.setCamera();
+
+        this.highwayGrid = this.layersToGrid([this.roadLayer]);
     }
 
     //Set up highway map
@@ -112,6 +114,27 @@ class LevelOne extends Phaser.Scene {
         this.cameras.main.setDeadzone(50, 50);
         this.cameras.main.setZoom(this.SCALE);
     }
+
+    layersToGrid() {
+        let grid = [];
+        let arrayOfLayers = this.map.layers;
+        for(let i = 0; i < this.map.height; i++) {
+            grid.push([]);
+        }
+
+        //Add info into 2D array
+        for(let layer of arrayOfLayers) {
+            for(let x = 0; x < this.map.width; x++) {
+                for(let y = 0; y < this.map.height; y++) {
+                    let tile = layer.tilemapLayer.getTileAt(x,y);
+                    if(tile != null) {
+                        grid[y][x] = tile.index;
+                    }
+                }
+            }
+        }
+        return grid;
+    }
     
     update() {
         this.checkKeyPress();
@@ -167,7 +190,17 @@ class LevelOne extends Phaser.Scene {
             }
             car.active = true;
             car.visible = true;
-            //console.log("height:",car.y,"width:",car.x); //TEST
+
+            //Check to make sure car is not on grass tile
+            //TODO: This is not correct. Fix getting the carID
+            /*
+            let carID = this.highwayGrid[Math.round(car.y/16)][0] - 1; //16 is the number pixels per tile
+            if ((carID != 441) || (carID != 468) || (carID != 406) || (carID != 460)) { //Road tiles
+                console.log("REMOVE");
+                car.active = false;
+                car.visible = false;
+            }
+            */
         }
     }
 
