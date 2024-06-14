@@ -1,6 +1,15 @@
 class LevelOne extends Phaser.Scene {
     constructor() {
         super("level1");
+
+        // Set up global variables to use later
+        this.tileHeight = 16;
+        this.tileWidth = 16;
+
+        this.playerSpeed = 400;
+
+        this.smokeLength = 12;
+        this.vfxCounter = this.smokeLength;
     }
 
     preload() {
@@ -17,6 +26,7 @@ class LevelOne extends Phaser.Scene {
     }
 
     create() {
+        // Initialization
         this.setMap();
         this.setPlayer();
         this.setKeys();
@@ -24,15 +34,26 @@ class LevelOne extends Phaser.Scene {
         this.setGroups();
         
         this.setCamera();
-
         this.highwayGrid = this.layersToGrid([this.roadLayer]);
+      
+        // Walking vfx
+        my.vfx.walking = this.add.particles(0, 0, "kenny-particles", {
+            frame: ['smoke_03.png', 'smoke_04.png', 'smoke_06.png', 'smoke_08.png'],
+            random: true,
+            scale: {start: 0.003, end: 0.04},
+            lifespan: 500,
+            alpha: {start: 1, end: 0.01}, 
+            frequency: 20
+        });
+
+        my.vfx.walking.stop();
     }
 
     //Set up highway map
     setMap() { 
         // Create a new tilemap game object which uses 16x16 pixel tiles, and is
         // 40 tiles wide and 90 tiles tall
-        this.map = this.add.tilemap("highway", 16, 16, 40, 90);
+        this.map = this.add.tilemap("highway", this.tileWidth, this.tileHeight, 40, 90);
         this.physics.world.setBounds(0, 0, 40*16, 90*16);
 
         // Add a tileset to the map
@@ -46,7 +67,7 @@ class LevelOne extends Phaser.Scene {
 
     //Add player sprite
     setPlayer() {
-        my.sprite.player = this.physics.add.sprite(this.map.widthInPixels/2, this.map.heightInPixels - 40, "tempPlayer"); //Temp testing
+        my.sprite.player = this.physics.add.sprite(this.map.widthInPixels/2, this.map.heightInPixels - 36, "downPlayer00");
 
         //my.sprite.player = this.physics.add.sprite(30, 30, "platformer_characters", "tile_0000.png");
         my.sprite.player.setCollideWorldBounds(true);
@@ -150,6 +171,10 @@ class LevelOne extends Phaser.Scene {
         this.checkCollision(my.sprite.busGroup.getChildren());
         this.checkCollision(my.sprite.carGroup.getChildren());
         this.checkCollision(my.sprite.scooterGroup.getChildren());
+
+        if (this.vfxCounter < 0) {
+            my.vfx.walking.stop();
+        }
     }
 
     //Check for specific key presses
@@ -157,20 +182,33 @@ class LevelOne extends Phaser.Scene {
     checkKeyPress() {
         if (Phaser.Input.Keyboard.JustDown(cursors.left)) { //Check for only 1 key press
             //Note: don't set velocity too high or player will pass through obstacles
+            // my.sprite.player.setTexture("leftPlayer");
             my.sprite.player.body.setVelocityX(-900);
-            //Note: don't set velocity too high or player will pass through obstacles
-            my.sprite.player.body.setVelocityX(-900);
+            my.sprite.player.anims.play("leftWalk");
+            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
+            my.vfx.walking.start();
+            this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
             my.sprite.player.body.setVelocityX(900);
-            my.sprite.player.body.setVelocityX(900);
+            my.sprite.player.anims.play("rightWalk");
+            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
+            my.vfx.walking.start();
+            this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
             my.sprite.player.body.setVelocityY(-900);
-            my.sprite.player.body.setVelocityY(-900);
+            my.sprite.player.anims.play("upWalk");
+            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
+            my.vfx.walking.start();
+            this.vfxCounter = this.smokeLength;
         } else if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
             my.sprite.player.body.setVelocityY(900);
-            my.sprite.player.body.setVelocityY(900);
+            my.sprite.player.anims.play("downWalk");
+            my.vfx.walking.startFollow(my.sprite.player, my.sprite.player.displayWidth/2-8, my.sprite.player.displayHeight/2, false);
+            my.vfx.walking.start();
+            this.vfxCounter = this.smokeLength;
         } else {
             my.sprite.player.setVelocity(0);
+            this.vfxCounter--;
         }
     }
 
